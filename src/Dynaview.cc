@@ -7,6 +7,8 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
 
+#include <vtkPolyDataReader.h>
+
 //---------------------------------------------------------------------------
 Dynaview::Dynaview()
 {
@@ -25,7 +27,7 @@ void Dynaview::initialize_vtk()
 
   //this->renderer_->SetRenderWindow( this->ui_->qvtk_widget->GetRenderWindow() );
 
-  this->ui_->qvtk_widget->GetRenderWindow()->AddRenderer(this->renderer_);
+  this->ui_->qvtk_widget->GetRenderWindow()->AddRenderer( this->renderer_ );
 
   // Create a sphere
   vtkSmartPointer<vtkSphereSource> sphereSource =
@@ -48,3 +50,34 @@ void Dynaview::initialize_vtk()
   this->renderer_->AddActor( actor );
   this->renderer_->SetBackground( .3, .6, .3 ); // Background color green
 }
+
+//---------------------------------------------------------------------------
+void Dynaview::add_vtk_file( std::string filename )
+{
+
+  vtkSmartPointer<vtkPolyData> input1;
+
+  vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+  reader1->SetFileName( filename.c_str() );
+  reader1->Update();
+  input1 = reader1->GetOutput();
+
+  vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetInputConnection( reader1->GetOutputPort() );
+
+  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+  actor->SetMapper( mapper );
+
+  this->renderer_->AddActor( actor );
+}
+
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------

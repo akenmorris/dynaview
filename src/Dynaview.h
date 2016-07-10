@@ -18,6 +18,8 @@ public:
 
   void initialize_vtk();
 
+  void add_vtk_file(std::string filename);
+
 private:
 
   vtkRenderer *renderer_;
