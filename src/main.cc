@@ -6,9 +6,9 @@
 int main( int argc, char** argv )
 {
 
-  if ( argc < 2 )
+  if ( argc < 3 )
   {
-    std::cerr << "Usage: dynaview <endo.vtk>\n";
+    std::cerr << "Usage: dynaview <endo.vtk> <S.csv> \n";
     return 1;
   }
 
@@ -22,6 +22,8 @@ int main( int argc, char** argv )
   dynaview.initialize_vtk();
 
   dynaview.add_vtk_file( argv[1] );
+
+  dynaview.add_spheres( argv[2] );
 
   return app.exec();
 }

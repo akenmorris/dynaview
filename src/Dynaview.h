@@ -20,6 +20,9 @@ public:
 
   void add_vtk_file(std::string filename);
 
+  void add_spheres(std::string filename);
+
+
 private:
 
   vtkRenderer *renderer_;
