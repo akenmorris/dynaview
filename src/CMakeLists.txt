@@ -35,21 +35,24 @@ ENDIF(ITK_FOUND)
 MESSAGE(STATUS "** ITK_DIR: ${ITK_DIR}")
 MESSAGE(STATUS "** ITK_LIBRARIES: ${ITK_LIBRARIES}")
 
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
-FIND_PACKAGE(VTK COMPONENTS
-  vtkCommonCore
-  vtkInfovisCore
-#  vtkInteractionStyle
-#  vtkRenderingFreeTypeOpenGL
-  vtkViewsQt
-  vtkFiltersCore
-  vtkGUISupportQt
-  vtkIOLegacy
-  vtkIOGeometry
-  vtkFiltersCore
-  vtkImagingStencil
-  vtkRenderingQt
-  )
+# FIND_PACKAGE(VTK COMPONENTS
+#   vtkCommonCore
+#   vtkInfovisCore
+# #  vtkInteractionStyle
+# #  vtkRenderingFreeTypeOpenGL
+#   vtkViewsQt
+#   vtkFiltersCore
+#   vtkGUISupportQt
+#   vtkIOLegacy
+#   vtkIOGeometry
+#   vtkFiltersCore
+#   vtkImagingStencil
+#   vtkRenderingQt
+# #  vtkInteraction
+#   )
 
  MESSAGE(STATUS "** USE_VTK_FILE: ${VTK_USE_FILE}")
  INCLUDE(${VTK_USE_FILE})

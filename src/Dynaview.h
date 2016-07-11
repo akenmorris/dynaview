@@ -20,8 +20,11 @@ public:
 
   void add_vtk_file(std::string filename);
 
-  void add_spheres(std::string filename);
+  void add_spheres(std::string filename, double r, double g, double b);
 
+  //void add_nrrd(std::string nrrd);
+
+  void add_dicom(std::string filename, std::string matrix_filename);
 
 private:
 
