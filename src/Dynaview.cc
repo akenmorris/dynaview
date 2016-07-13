@@ -28,6 +28,7 @@
 #include <vtkImageSlice.h>
 #include <vtkImageResliceMapper.h>
 #include <vtkPlaneSource.h>
+#include <vtkLineSource.h>
 #include <vtkImageShiftScale.h>
 #include <vtkImageCanvasSource2D.h>
 #include <vtkMatrix4x4.h>
@@ -101,14 +102,12 @@ void Dynaview::add_vtk_file( std::string filename, std::string matrix_filename )
   vtkTransform* transform = vtkTransform::New();
   transform->Identity();
 
-
   if ( matrix_filename != "" )
   {
     vtkMatrix4x4* matrix = this->read_matrix( matrix_filename );
     transform->Concatenate( matrix );
   }
   //transform->RotateZ( 180 );
-
 
   actor->SetUserTransform( transform );
 
@@ -168,7 +167,7 @@ void Dynaview::add_spheres( std::string filename, double r, double g, double b )
 
       actor->GetProperty()->SetColor( 1, 0, 0 ); //(R,G,B)
 
-      if (count != 0)
+      if ( count != 0 )
       {
         actor->GetProperty()->SetColor( r, g, b ); //(R,G,B)
       }
@@ -179,6 +178,51 @@ void Dynaview::add_spheres( std::string filename, double r, double g, double b )
     }
   }
   file->close();
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::add_spheres( vtkPoints* points, double r, double g, double b )
+{
+  for ( int i = 0; i < points->GetNumberOfPoints(); i++ )
+  {
+    // Create a sphere
+    vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
+    sphereSource->SetCenter( points->GetPoint( i ) );
+    sphereSource->SetRadius( 5.0 );
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection( sphereSource->GetOutputPort() );
+
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper( mapper );
+
+    actor->GetProperty()->SetColor( 1, 0, 0 ); //(R,G,B)
+
+    if ( i != 0 )
+    {
+      actor->GetProperty()->SetColor( r, g, b ); //(R,G,B)
+    }
+
+    this->renderer_->AddActor( actor );
+  }
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::add_line( double* p1, double* p2 )
+{
+  vtkLineSource* line = vtkLineSource::New();
+  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkActor* actor = vtkActor::New();
+
+  line->SetPoint1( p1 );
+  line->SetPoint2( p2 );
+  line->Update();
+
+  mapper->SetInputData( line->GetOutput() );
+  mapper->Update();
+
+  actor->SetMapper( mapper );
+  this->renderer_->AddActor( actor );
 }
 
 //---------------------------------------------------------------------------
@@ -327,6 +371,58 @@ vtkMatrix4x4* Dynaview::read_matrix( std::string filename )
   file->close();
 
   return matrix;
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::set_sources( std::string filename )
+{}
+
+//---------------------------------------------------------------------------
+vtkPoints* Dynaview::read_points( std::string filename )
+{
+  vtkPoints* points = vtkPoints::New();
+
+  double x, y, z;
+
+  QFile* file = new QFile( QString::fromStdString( filename ) );
+
+  if ( !file->open( QIODevice::ReadOnly ) )
+  {
+    std::cerr << "Error opening file for reading: " << filename << "\n";
+  }
+
+  QTextStream ts( file );
+
+  int count = 0;
+  while ( !ts.atEnd() )
+  {
+    QString str;
+    ts >> str;
+    if ( str != "" )
+    {
+      QStringList parts = str.split( "," );
+
+      double x = parts[0].toDouble();
+      double y = parts[1].toDouble();
+      double z = 0;
+      if ( parts.size() == 2 )
+      {
+        x = parts[0].toDouble();
+/*        y = 0;
+        z = -parts[1].toDouble();*/
+        y = parts[1].toDouble();
+        z = 0;
+      }
+      if ( parts.size() == 3 )
+      {
+        z = parts[2].toDouble();
+      }
+
+      points->InsertNextPoint( x, y, z );
+    }
+  }
+  file->close();
+  return points;
 }
 
 //---------------------------------------------------------------------------

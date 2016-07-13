@@ -52,6 +52,8 @@ dlmwrite('lmMR.csv',lmMR);
 
 %lmX = lmX*[1 0 0; 0 0 1; 0 -1 0];
 
+
+
 save('lmX.mat','lmX');
 save('S.mat','S');
 save('S1.mat','S1');
