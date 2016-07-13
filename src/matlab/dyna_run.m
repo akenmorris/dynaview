@@ -48,7 +48,7 @@ dlmwrite('lmX1.csv',lmX1);
 dlmwrite('lmX2.csv',lmX2);
 dlmwrite('lmMR.csv',lmMR);
 
-[lmX,S,S1,S2,MX1,MX2,Mpro,ZMR] = SCIrunViz(fp1,fp2,lmX1,lmX2,lmMR) 
+[lmX,lmX13D,lmX23D,S,S1,S2,MX1,MX2,Mpro,ZMR] = SCIrunViz(fp1,fp2,lmX1,lmX2,lmMR) 
 
 %lmX = lmX*[1 0 0; 0 0 1; 0 -1 0];
 
@@ -62,6 +62,8 @@ save('Mpro.mat','Mpro');
 save('ZMR.mat', 'ZMR');
 
 dlmwrite('lmX.csv',lmX);
+dlmwrite('lmX13D.csv',lmX13D);
+dlmwrite('lmX23D.csv',lmX23D);
 dlmwrite('S.csv',S);
 dlmwrite('S1.csv',S1);
 dlmwrite('S2.csv',S2);

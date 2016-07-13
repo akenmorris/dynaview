@@ -24,16 +24,16 @@ int main( int argc, char** argv )
   //dynaview.add_vtk_file( argv[1] );
 
   // S.csv
-  //dynaview.add_spheres( argv[2], 1, 0, 0 );
+  dynaview.add_spheres( argv[2], 1, 0, 0 );
 
   // lmx1.csv
-  //dynaview.add_spheres( argv[3], 0, 1, 0 );
+  dynaview.add_spheres( argv[3], 0, 1, 0 );
 
   // zmr.csv
   dynaview.add_spheres( argv[4], 0, 0, 1 );
 
  // lmx2.csv
-  //dynaview.add_spheres( argv[11], 0, 1, 0 );
+  dynaview.add_spheres( argv[11], 0, 1, 0 );
 
   // lmx.csv
   //dynaview.add_spheres( argv[12], 0, 0, 1 );

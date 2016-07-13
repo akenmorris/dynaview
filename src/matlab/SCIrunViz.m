@@ -1,4 +1,4 @@
-function [lmX,S,S1,S2,MX1,MX2,Mpro,ZMR] = SCIrunViz(fp1,fp2,lmX1,lmX2,lmMR)
+function [lmX,lmX13D,lmX23D,S,S1,S2,MX1,MX2,Mpro,ZMR] = SCIrunViz(fp1,fp2,lmX1,lmX2,lmMR)
 
 % [lmX,S,S1,S2,MX1,MX2,Mpro,ZMR] = SCIrunViz(fp1,fp2,lmX1,lmX2,lmMR) 
 % prepares the output of the registration to comply with the formats in 
