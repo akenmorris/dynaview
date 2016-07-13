@@ -45,7 +45,7 @@ Dynaview::Dynaview()
 {
   this->ui_ = new Ui_Dynaview;
   this->ui_->setupUi( this );
-  this->setStatusBar(NULL);
+  this->setStatusBar( NULL );
 }
 
 //---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void Dynaview::initialize_vtk()
 
   vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
   //sphereSource->SetCenter( parts[0].toDouble(), parts[1].toDouble(), parts[2].toDouble() );
-  sphereSource->SetRadius( 5.0 );
+  sphereSource->SetRadius( 1.0 );
 
   vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   mapper->SetInputConnection( sphereSource->GetOutputPort() );
@@ -98,11 +98,19 @@ void Dynaview::add_vtk_file( std::string filename, std::string matrix_filename )
   vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
   actor->SetMapper( mapper );
 
+  vtkTransform* transform = vtkTransform::New();
+  transform->Identity();
+
+
   if ( matrix_filename != "" )
   {
     vtkMatrix4x4* matrix = this->read_matrix( matrix_filename );
-    actor->SetUserMatrix( matrix );
+    transform->Concatenate( matrix );
   }
+  //transform->RotateZ( 180 );
+
+
+  actor->SetUserTransform( transform );
 
   this->renderer_->AddActor( actor );
 }
@@ -122,6 +130,7 @@ void Dynaview::add_spheres( std::string filename, double r, double g, double b )
 
   QTextStream ts( file );
 
+  int count = 0;
   while ( !ts.atEnd() )
   {
     QString str;
@@ -136,8 +145,10 @@ void Dynaview::add_spheres( std::string filename, double r, double g, double b )
       if ( parts.size() == 2 )
       {
         x = parts[0].toDouble();
-        y = 0;
-        z = -parts[1].toDouble();
+/*        y = 0;
+        z = -parts[1].toDouble();*/
+        y = parts[1].toDouble();
+        z = 0;
       }
       if ( parts.size() == 3 )
       {
@@ -147,7 +158,7 @@ void Dynaview::add_spheres( std::string filename, double r, double g, double b )
       // Create a sphere
       vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
       sphereSource->SetCenter( x, y, z );
-      sphereSource->SetRadius( 15.0 );
+      sphereSource->SetRadius( 5.0 );
 
       vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
       mapper->SetInputConnection( sphereSource->GetOutputPort() );
@@ -155,8 +166,14 @@ void Dynaview::add_spheres( std::string filename, double r, double g, double b )
       vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
       actor->SetMapper( mapper );
 
-      //Set the color of the sphere
-      actor->GetProperty()->SetColor( r, g, b ); //(R,G,B)
+      actor->GetProperty()->SetColor( 1, 0, 0 ); //(R,G,B)
+
+      if (count != 0)
+      {
+        actor->GetProperty()->SetColor( r, g, b ); //(R,G,B)
+      }
+
+      count++;
 
       this->renderer_->AddActor( actor );
     }
@@ -229,7 +246,8 @@ void Dynaview::add_dicom( std::string filename, std::string matrix_filename )
   transform->Concatenate( matrix );
 
   // center on origin
-  transform->Translate( -dist, 0, -dist );
+  //transform->Translate( -dist, 0, -dist );
+  transform->Translate( -dist, -dist, 0 );
 
   //transform->RotateZ(30);
 
@@ -240,8 +258,11 @@ void Dynaview::add_dicom( std::string filename, std::string matrix_filename )
 
   //plane->SetCenter(-263,-159,-147);
 
-  plane->SetPoint2( 0, 0, dist * 2 );
+  //plane->SetPoint2( 0, 0, dist * 2 );
+  //plane->SetPoint1( dist * 2, 0, 0 );
+  plane->SetPoint2( 0, dist * 2, 0 );
   plane->SetPoint1( dist * 2, 0, 0 );
+
   //plane->SetOrigin(-dist/2,0,-dist/2);
   ///plane->SetPoint1(100,-100,0);
   //plane->SetPoint2(-100,100,0);
@@ -255,6 +276,7 @@ void Dynaview::add_dicom( std::string filename, std::string matrix_filename )
 
   //plane_actor->SetUserMatrix( m2 );
   //plane_actor->SetUserMatrix( matrix );
+
   plane_actor->SetUserTransform( transform );
 
   //matrix->Print( std::cerr );
