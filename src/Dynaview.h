@@ -19,6 +19,8 @@ public:
 
   void initialize_vtk();
 
+  int read_files(int argc, char **argv);
+
   void add_vtk_file(std::string filename, std::string matrix_filename = "");
 
   void add_spheres(std::string filename, double r, double g, double b);
@@ -39,10 +41,19 @@ public:
 
 
   static vtkPoints *read_points(std::string filename);
+
+public Q_SLOTS:
+
+  void on_lines_checkbox_toggled();
+  void on_atrium_checkbox_toggled();
+
 private:
 
   vtkRenderer *renderer_;
 
+
+  int argc_;
+  char **argv_;
 
   /// designer form
   Ui_Dynaview* ui_;

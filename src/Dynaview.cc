@@ -47,6 +47,7 @@ Dynaview::Dynaview()
   this->ui_ = new Ui_Dynaview;
   this->ui_->setupUi( this );
   this->setStatusBar( NULL );
+  this->ui_->qvtk_widget->GetRenderWindow()->LineSmoothingOn();
 }
 
 //---------------------------------------------------------------------------
@@ -80,6 +81,67 @@ void Dynaview::initialize_vtk()
   //actor->GetProperty()->SetColor( r, g, b ); //(R,G,B)
 
   this->renderer_->AddActor( actor );
+}
+
+//---------------------------------------------------------------------------
+int Dynaview::read_files( int argc, char** argv )
+{
+  this->argc_ = argc;
+  this->argv_ = argv;
+
+  this->renderer_->RemoveAllViewProps();
+
+  if ( argc < 13 )
+  {
+    std::cerr << "Usage: dynaview <endo.vtk> <S.csv> lmx1.csv zmr.csv fluoro1.dcm fluoro2.dcm MX1.csv MX2.csv lm_mr.csv MPro.csv lmx2.csv lmx.csv\n";
+    return -1;
+  }
+
+  //dynaview.add_vtk_file( argv[1] );
+
+  // S.csv
+  //dynaview.add_spheres( argv[2], 1, 0, 0 );
+
+  vtkPoints* sources = Dynaview::read_points( argv[2] );
+  this->add_spheres( sources, 1, 0, 0 );
+
+  // lmx1.csv
+  vtkPoints* f1_points = Dynaview::read_points( argv[3] );
+  this->add_spheres( f1_points, 0, 1, 0 );
+
+  // zmr.csv
+  this->add_spheres( argv[4], 0, 1, 0 );
+
+  // lmx2.csv
+  vtkPoints* f2_points = Dynaview::read_points( argv[11] );
+  this->add_spheres( f2_points, 0, 1, 0 );
+
+  if ( this->ui_->lines_checkbox->isChecked() )
+  {
+    this->add_line( sources->GetPoint( 1 ), f1_points->GetPoint( 0 ) );
+    this->add_line( sources->GetPoint( 0 ), f2_points->GetPoint( 0 ) );
+  }
+  // lmx.csv
+  //this->add_spheres( argv[12], 0, 0, 1 );
+
+  // flouro1.dcm, MX1.csv
+  this->add_dicom( argv[5], argv[7] );
+
+  // flouro2.dcm, MX1.csv
+  this->add_dicom( argv[6], argv[8] );
+
+  // original CS landmarks (lm_mr)
+  //this->add_spheres( argv[9], 1, 0, 1 );
+
+  if ( this->ui_->atrium_checkbox->isChecked() )
+  {
+    this->add_vtk_file( argv[1], argv[10] );
+  }
+
+  //this->renderer_->Render();
+  this->ui_->qvtk_widget->GetRenderWindow()->Render();
+
+  return 0;
 }
 
 //---------------------------------------------------------------------------
@@ -222,6 +284,7 @@ void Dynaview::add_line( double* p1, double* p2 )
   mapper->Update();
 
   actor->SetMapper( mapper );
+  actor->GetProperty()->SetLineWidth( 2 );
   this->renderer_->AddActor( actor );
 }
 
@@ -423,6 +486,18 @@ vtkPoints* Dynaview::read_points( std::string filename )
   }
   file->close();
   return points;
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_lines_checkbox_toggled()
+{
+  this->read_files( this->argc_, this->argv_ );
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_atrium_checkbox_toggled()
+{
+  this->read_files( this->argc_, this->argv_ );
 }
 
 //---------------------------------------------------------------------------

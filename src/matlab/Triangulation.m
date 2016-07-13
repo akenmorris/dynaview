@@ -28,8 +28,8 @@ W=[];
 %o1 = -inv(R1)*t1;
 %o2 = -inv(R2)*t2;
 
-o1 = t1;
-o2 = t2;
+o1 = t2;
+o2 = t1;
 
 b = o2-o1;
 
@@ -52,7 +52,7 @@ for k=1:N
 
     C = [d1 d2];
 
-    a = (pinv(C)*b/2); %pseudo inverse
+    a = (pinv(C)*b); %pseudo inverse
     nu = a(1);
     mu = -a(2);
 
