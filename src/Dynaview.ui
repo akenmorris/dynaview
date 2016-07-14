@@ -33,27 +33,27 @@
     <item row="0" column="1">
      <widget class="QWidget" name="widget" native="true">
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="atrium_checkbox">
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="sources_checkbox">
          <property name="text">
-          <string>Left Atrium</string>
+          <string>Sources</string>
          </property>
          <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="lines_checkbox">
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="origin_checkbox">
          <property name="text">
-          <string>Lines</string>
+          <string>Origin</string>
          </property>
          <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="8" column="1">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -65,6 +65,81 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="atrium_checkbox">
+         <property name="text">
+          <string>Left Atrium</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QSlider" name="opacity_slider">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="lines_checkbox">
+         <property name="text">
+          <string>Lines</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Atrium Opacity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="landmarks_checkbox">
+         <property name="text">
+          <string>Landmarks</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="parallel_checkbox">
+         <property name="text">
+          <string>Parallel Projection</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

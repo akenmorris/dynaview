@@ -46,6 +46,11 @@ public Q_SLOTS:
 
   void on_lines_checkbox_toggled();
   void on_atrium_checkbox_toggled();
+  void on_origin_checkbox_toggled();
+  void on_sources_checkbox_toggled();
+  void on_parallel_checkbox_toggled();
+  void on_landmarks_checkbox_toggled();
+  void on_opacity_slider_valueChanged(int value);
 
 private:
 

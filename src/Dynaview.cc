@@ -33,6 +33,7 @@
 #include <vtkImageCanvasSource2D.h>
 #include <vtkMatrix4x4.h>
 #include <vtkTransform.h>
+#include <vtkCamera.h>
 
 #include <vtkMedicalImageReader2.h>
 
@@ -67,20 +68,8 @@ void Dynaview::initialize_vtk()
 
   this->renderer_->SetAmbient( 1, 1, 1 );
 
-  vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
-  //sphereSource->SetCenter( parts[0].toDouble(), parts[1].toDouble(), parts[2].toDouble() );
-  sphereSource->SetRadius( 1.0 );
-
-  vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-  mapper->SetInputConnection( sphereSource->GetOutputPort() );
-
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-  actor->SetMapper( mapper );
-
   //Set the color of the sphere
   //actor->GetProperty()->SetColor( r, g, b ); //(R,G,B)
-
-  this->renderer_->AddActor( actor );
 }
 
 //---------------------------------------------------------------------------
@@ -97,24 +86,43 @@ int Dynaview::read_files( int argc, char** argv )
     return -1;
   }
 
+  /// origin
+  if ( this->ui_->origin_checkbox->isChecked() )
+  {
+    vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
+    sphereSource->SetRadius( 10.0 );
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection( sphereSource->GetOutputPort() );
+
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper( mapper );
+    this->renderer_->AddActor( actor );
+  }
+
   //dynaview.add_vtk_file( argv[1] );
 
   // S.csv
   //dynaview.add_spheres( argv[2], 1, 0, 0 );
 
   vtkPoints* sources = Dynaview::read_points( argv[2] );
-  this->add_spheres( sources, 1, 0, 0 );
+
+  if ( this->ui_->sources_checkbox->isChecked() )
+  {
+    this->add_spheres( sources, 1, 0, 0 );
+  }
 
   // lmx1.csv
   vtkPoints* f1_points = Dynaview::read_points( argv[3] );
-  this->add_spheres( f1_points, 0, 1, 0 );
-
-  // zmr.csv
-  this->add_spheres( argv[4], 0, 1, 0 );
-
   // lmx2.csv
   vtkPoints* f2_points = Dynaview::read_points( argv[11] );
-  this->add_spheres( f2_points, 0, 1, 0 );
+  if ( this->ui_->landmarks_checkbox->isChecked() )
+  {
+    this->add_spheres( f1_points, 0, 1, 0 );
+    this->add_spheres( f2_points, 0, 1, 0 );
+    // zmr.csv
+    this->add_spheres( argv[4], 0, 1, 0 );
+  }
 
   if ( this->ui_->lines_checkbox->isChecked() )
   {
@@ -138,7 +146,6 @@ int Dynaview::read_files( int argc, char** argv )
     this->add_vtk_file( argv[1], argv[10] );
   }
 
-  //this->renderer_->Render();
   this->ui_->qvtk_widget->GetRenderWindow()->Render();
 
   return 0;
@@ -172,6 +179,10 @@ void Dynaview::add_vtk_file( std::string filename, std::string matrix_filename )
   //transform->RotateZ( 180 );
 
   actor->SetUserTransform( transform );
+
+  double opacity = this->ui_->opacity_slider->value() / 100.0;
+
+  actor->GetProperty()->SetOpacity( opacity );
 
   this->renderer_->AddActor( actor );
 }
@@ -496,6 +507,38 @@ void Dynaview::on_lines_checkbox_toggled()
 
 //---------------------------------------------------------------------------
 void Dynaview::on_atrium_checkbox_toggled()
+{
+  this->read_files( this->argc_, this->argv_ );
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_origin_checkbox_toggled()
+{
+  this->read_files( this->argc_, this->argv_ );
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_sources_checkbox_toggled()
+{
+  this->read_files( this->argc_, this->argv_ );
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_parallel_checkbox_toggled()
+{
+  this->renderer_->GetActiveCamera()->SetParallelProjection( this->ui_->parallel_checkbox->isChecked() );
+  this->renderer_->ResetCamera();
+  this->ui_->qvtk_widget->GetRenderWindow()->Render();
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_landmarks_checkbox_toggled()
+{
+  this->read_files( this->argc_, this->argv_ );
+}
+
+//---------------------------------------------------------------------------
+void Dynaview::on_opacity_slider_valueChanged( int value )
 {
   this->read_files( this->argc_, this->argv_ );
 }
