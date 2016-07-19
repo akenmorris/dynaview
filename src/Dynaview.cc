@@ -82,7 +82,8 @@ int Dynaview::read_files( int argc, char** argv )
 
   if ( argc < 13 )
   {
-    std::cerr << "Usage: dynaview <endo.vtk> <S.csv> lmx1.csv zmr.csv fluoro1.dcm fluoro2.dcm MX1.csv MX2.csv lm_mr.csv MPro.csv lmx2.csv lmx.csv\n";
+    std::cerr << "Usage: dynaview <endo.vtk> <S.csv> lmx1.csv zmr.csv fluoro1.dcm fluoro2.dcm MX1.csv"
+                 " MX2.csv lm_mr.csv MPro.csv lmx2.csv lmx.csv\n";
     return -1;
   }
 
@@ -358,14 +359,16 @@ void Dynaview::add_dicom( std::string filename, std::string matrix_filename )
 
   vtkTransform* transform = vtkTransform::New();
 
-  double dist = ( dims[0] / 2 ) * spacing;
-  std::cerr << "dist = " << dist << "\n";
+  double dist_x = ( dims[0] / 2 ) * spacing;
+  double dist_y = ( dims[1] / 2 ) * spacing;
+  std::cerr << "dist_x = " << dist_x << "\n";
+  std::cerr << "dist_y = " << dist_y << "\n";
 
   transform->Concatenate( matrix );
 
   // center on origin
   //transform->Translate( -dist, 0, -dist );
-  transform->Translate( -dist, -dist, 0 );
+  transform->Translate( -dist_x, -dist_y, 0 );
 
   //transform->RotateZ(30);
 
@@ -378,8 +381,8 @@ void Dynaview::add_dicom( std::string filename, std::string matrix_filename )
 
   //plane->SetPoint2( 0, 0, dist * 2 );
   //plane->SetPoint1( dist * 2, 0, 0 );
-  plane->SetPoint2( 0, dist * 2, 0 );
-  plane->SetPoint1( dist * 2, 0, 0 );
+  plane->SetPoint1( dist_x * 2, 0, 0 );
+  plane->SetPoint2( 0, dist_y * 2, 0 );
 
   //plane->SetOrigin(-dist/2,0,-dist/2);
   ///plane->SetPoint1(100,-100,0);
