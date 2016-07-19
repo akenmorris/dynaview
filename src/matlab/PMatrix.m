@@ -32,7 +32,7 @@ else
 SOD = SID/2+20; % assumption when DistanceSourceToPatient is missing
 end
 
-SID=1024
+%SID=1024
 %SOD=785
 
 % Number of pixels

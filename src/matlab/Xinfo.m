@@ -14,7 +14,7 @@ else
     SOD = 785; % According to DynaCT calibration file (g_Robot_TL15_Left_480_L_A_1.50_2x2)
 end
 
-SID=1024
+%SID=1024
 %SOD=785
 
 nu = double(info.Width);
