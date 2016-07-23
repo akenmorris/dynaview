@@ -1,0 +1,25 @@
+To process a patient:
+
+    1. Open Corview Project
+        a. Export VTK with all smoothing stuff as "endo.vtk" in working/id directory
+        b. Segment the CS (figure 1)
+        c. Assign 10 landmarks along the CS (from the top down) (figure 2)
+        d. Export landmarks as "mri.csv"
+        e. Import both fluoro images
+        f. For each fluoro image:
+            a. Create mask layer to hold landmarks
+            b. Go to Regions tab and assign 10 landmarks along the CS catheter starting from the tip (figure 3)
+            c. Make sure to use the first slice, slice 1!
+            d. Export landmarks as "f1.csv", "f2.csv"
+    2. Convert corview landmark files for Matlab
+        a. sed -ibak 's/ /,/g'  f1.csv
+        b. sed -ibak 's/ /,/g'  f2.csv
+        c. sed -ibak 's/ /,/g'  mri.csv
+    3. Open Matlab
+        a. ???
+    4. Run dynaview
+        a. dynaview mri.vtk S.csv lmX13D.csv zmr.csv f1.dcm f2.dcm MX1.csv MX2.csv lmMR.csv MPRo.csv lmX23D.csv lmX.csv
+        b. Export image from above
+        c. Export image parallel projection centered on fluoro 1
+        d. Export image parallel projection centered on fluoro 2
+
